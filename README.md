@@ -9,9 +9,6 @@ func main(){
     code := manager.Get()
     fmt.Println(code)
     c, err := manager.Verify(code)
-    if err != nil {
-        t.Fatal(err)
-    }
     fmt.Println(c, err)	
 }
 ```
