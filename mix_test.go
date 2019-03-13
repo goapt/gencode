@@ -23,6 +23,27 @@ func TestMixCode(t *testing.T) {
 }
 
 
+func TestMixRepeat2(t *testing.T) {
+	key := "20180919"
+	m := make(map[string]bool)
+
+	for i :=1000000000; i < 1099999999;i++ {
+		//fmt.Println("before", before)
+		before := ToStr(i)
+		s := MixCode(before, key)
+		if i < 1000000010 {
+			fmt.Println(s)
+		}
+
+		if m[s] {
+			t.Fatal("重复了", s)
+		}
+		m[s] = true
+
+	}
+}
+
+
 
 func TestMixRepeat(t *testing.T) {
 	ring := NewRing(10000, 99999)
