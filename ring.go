@@ -1,12 +1,17 @@
 package gencode
 
-func NewRing(min, max int) *Ring {
+import (
+	"log"
+	"time"
+)
+
+func NewRing(min, max int, wait time.Duration) *Ring {
 	r := &Ring{
 		ch:  make(chan int, max-min+1),
 		Min: min,
 		Max: max,
+		Wait:wait,
 	}
-	r.init()
 	return r
 }
 
@@ -14,6 +19,7 @@ type Ring struct {
 	ch  chan int
 	Min int
 	Max int
+	Wait time.Duration
 }
 
 func (r *Ring) init() {
@@ -27,9 +33,17 @@ func (r *Ring) init() {
 }
 
 func (r *Ring) Next() int {
-	n := <-r.ch
-	defer r.Push(n)
-	return n
+	for {
+		select {
+		case n := <-r.ch:
+			return n
+		default:
+			log.Println("=====>init")
+			//每次重新生成轮询随机数的时候都等待指定的时间，这样就可以保证不会在同一秒内生成重复的码
+			<-time.After(r.Wait)
+			r.init()
+		}
+	}
 }
 
 func (r *Ring) Pull() int {

@@ -1,7 +1,6 @@
 package gencode
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -18,13 +17,18 @@ func GenTime() int64 {
 }
 
 // 校验时间码
-func ResolveTime(t int64) time.Time {
+func ResolveTime(t int64) (*time.Time, error) {
 	// 获取当前年份，比如19年是19
-	year := int(t/1e8)
-	tmStart, _ := time.ParseInLocation("2006", "20"+ToStr(year), time.Local)
+	year := int(t / 1e8)
+	tmStart, err := time.ParseInLocation("2006", "20"+ToStr(year), time.Local)
+	if err != nil {
+		return nil, err
+	}
+
 	// 反算秒数
 	seconds := t - int64(year*1e8)
-	return tmStart.Add(time.Duration(seconds) * time.Second)
+	tt := tmStart.Add(time.Duration(seconds) * time.Second)
+	return &tt, nil
 }
 
 // 生成唯一码
@@ -34,20 +38,16 @@ func GenCode(rn string) string {
 	t := GenTime()
 	// 混淆
 	mt := MixCode(ToStr(t), rn)
-	code := mt + rn
-	// 加校验位
-	return mt + rn + ToStr(LuhnGenerate(StrTo(code).MustInt64()))
+	// 必须保证rn在前面，因为混淆之后第一位数可能是0，会导致后续求校验码错误
+	return rn + mt
 }
 
 func ResolveCode(code string) (*time.Time, error) {
 	//得到前9位时间码转换为时间对象
-	mt := code[:10]
-	rn := code[10:15]
+	rn := code[:5]
+	mt := code[5:15]
 
-	fmt.Println("rcode",mt,rn)
 	t := DeMixCode(mt, rn)
-
-	fmt.Println("t",t)
 
 	tn, err := StrTo(t).Int64()
 
@@ -55,7 +55,10 @@ func ResolveCode(code string) (*time.Time, error) {
 		return nil, err
 	}
 
-	tm := ResolveTime(tn)
+	tm, err := ResolveTime(tn)
+	if err != nil {
+		return nil, err
+	}
 
-	return &tm, nil
+	return tm, nil
 }

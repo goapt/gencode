@@ -3,10 +3,9 @@ package gencode
 import (
 	"fmt"
 	"testing"
-	"time"
 )
 
-var manager = New("", "20180919")
+var manager = New("1", "20180919", false)
 
 func TestResolveCode(t *testing.T) {
 
@@ -21,18 +20,20 @@ func TestResolveCode(t *testing.T) {
 
 func TestGenCodeRepeat(t *testing.T) {
 	m := make(map[string]bool)
-	for n := 1; n < 100; n++ {
-		for i := 10000; i < 99999; i++ {
-			code := manager.Get()
-			if i < 10 {
-				fmt.Println(code)
-			}
-
-			if m[code] {
-				t.Fatal("重复了", code)
-			}
-			m[code] = true
+	for i := 1; i < 1000000; i++ {
+		code := manager.Get()
+		if i < 100 {
+			fmt.Println(code)
 		}
-		time.Sleep(1 * time.Second)
+
+		_, err := manager.Verify(code)
+		if err != nil {
+			t.Fatal("验证失败", code, err)
+		}
+
+		if m[code] {
+			t.Fatal("重复了", code)
+		}
+		m[code] = true
 	}
 }

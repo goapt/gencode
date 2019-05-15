@@ -11,5 +11,6 @@ func TestGenTime(t *testing.T) {
 
 func TestResolveTime(t *testing.T) {
 	d := GenTime()
-	fmt.Println(d, ResolveTime(d))
+	mt, err := ResolveTime(d)
+	fmt.Println(d, mt, err)
 }
