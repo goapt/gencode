@@ -20,6 +20,7 @@ type Ring struct {
 	Min int
 	Max int
 	Wait time.Duration
+	preTime time.Time
 }
 
 func (r *Ring) init() {
@@ -33,14 +34,19 @@ func (r *Ring) init() {
 }
 
 func (r *Ring) Next() int {
+	n := time.Now()
+	r.preTime = n
+
 	for {
 		select {
 		case n := <-r.ch:
 			return n
 		default:
 			log.Println("=====>init")
-			//每次重新生成轮询随机数的时候都等待指定的时间，这样就可以保证不会在同一秒内生成重复的码
-			<-time.After(r.Wait)
+			//如果时间在同一秒，则需要暂停一秒，这样就可以保证不会在同一秒内生成重复的码
+			if n.Sub(r.preTime) < r.Wait {
+				<-time.After(r.Wait)
+			}
 			r.init()
 		}
 	}
