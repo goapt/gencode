@@ -1,3 +1,3 @@
-module github.com/ilibs/gencode
+module github.com/goapt/gencode
 
 go 1.12
