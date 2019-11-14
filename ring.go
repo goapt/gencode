@@ -1,26 +1,26 @@
 package gencode
 
 import (
-	"log"
+	"sync"
 	"time"
 )
 
 func NewRing(min, max int, wait time.Duration) *Ring {
 	r := &Ring{
-		ch:  make(chan int, max-min+1),
-		Min: min,
-		Max: max,
-		Wait:wait,
+		ch:   make(chan int),
+		Min:  min,
+		Max:  max,
+		Wait: wait,
 	}
+	r.init()
 	return r
 }
 
 type Ring struct {
-	ch  chan int
-	Min int
-	Max int
+	ch   chan int
+	Min  int
+	Max  int
 	Wait time.Duration
-	preTime time.Time
 }
 
 func (r *Ring) init() {
@@ -28,28 +28,20 @@ func (r *Ring) init() {
 	for i := r.Min; i <= r.Max; i++ {
 		m[i] = false
 	}
-	for k, _ := range m {
-		r.ch <- k
-	}
+
+	go func() {
+		for {
+			for k, _ := range m {
+				r.Push(k)
+			}
+			//保证同一个周期内不会重复
+			<-time.After(1 * time.Second)
+		}
+	}()
 }
 
 func (r *Ring) Next() int {
-	n := time.Now()
-	r.preTime = n
-
-	for {
-		select {
-		case n := <-r.ch:
-			return n
-		default:
-			log.Println("=====>init")
-			//如果时间在同一秒，则需要暂停一秒，这样就可以保证不会在同一秒内生成重复的码
-			if n.Sub(r.preTime) < r.Wait {
-				<-time.After(r.Wait)
-			}
-			r.init()
-		}
-	}
+	return r.Pull()
 }
 
 func (r *Ring) Pull() int {
