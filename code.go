@@ -3,6 +3,8 @@ package gencode
 import (
 	"strconv"
 	"time"
+
+	"github.com/ilibs/gencode/internal"
 )
 
 // 生成10位时间码
@@ -20,7 +22,7 @@ func GenTime() int64 {
 func ResolveTime(t int64) (*time.Time, error) {
 	// 获取当前年份，比如19年是19
 	year := int(t / 1e8)
-	tmStart, err := time.ParseInLocation("2006", "20"+ToStr(year), time.Local)
+	tmStart, err := time.ParseInLocation("2006", "20"+internal.ToStr(year), time.Local)
 	if err != nil {
 		return nil, err
 	}
@@ -37,13 +39,13 @@ func GenCode(rn string) string {
 	// 10 位的时间信息
 	t := GenTime()
 	// 必须保证rn在前面，因为混淆之后第一位数可能是0，会导致后续求校验码错误
-	return rn + ToStr(t)
+	return rn + internal.ToStr(t)
 }
 
 func ResolveCode(code string) (*time.Time, error) {
 	//得到前10位时间码转换为时间对象
 	t := code[5:15]
-	tn, err := StrTo(t).Int64()
+	tn, err := internal.StrTo(t).Int64()
 
 	if err != nil {
 		return nil, err

@@ -3,6 +3,8 @@ package gencode
 import (
 	"fmt"
 	"testing"
+
+	"github.com/ilibs/gencode/internal"
 )
 
 func TestLuhnValid(t *testing.T) {
@@ -24,7 +26,7 @@ func TestLuhnValid(t *testing.T) {
 		n := LuhnGenerate(i)
 		m := fmt.Sprintf("%d%d", i, n)
 		fmt.Println(m)
-		if ok := LuhnValid(StrTo(m).MustInt64()); !ok {
+		if ok := LuhnValid(internal.StrTo(m).MustInt64()); !ok {
 			t.Fatalf("Valid(%d): %d\n\t Got: %t", i, n, ok)
 		}
 	}

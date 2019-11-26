@@ -20,7 +20,7 @@ func TestResolveCode(t *testing.T) {
 
 func TestGenCodeRepeat(t *testing.T) {
 	m := make(map[string]bool)
-	for i := 1; i < 1000000; i++ {
+	for i := 1; i < 10000; i++ {
 		code := manager.Get()
 		if i < 100 {
 			fmt.Println(code)

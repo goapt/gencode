@@ -3,15 +3,16 @@ package gencode
 import (
 	"fmt"
 	"testing"
-	"time"
+
+	"github.com/ilibs/gencode/internal"
 )
 
 func TestMixCode(t *testing.T) {
 	key := "2018091907"
 
-	for i := 100000; i < 999999; i++ {
+	for i := 100000; i < 100999; i++ {
 		//fmt.Println("before", before)
-		before := ToStr(i)
+		before := internal.ToStr(i)
 		s := MixCode(before, key)
 		//fmt.Println("end   ", s)
 		s2 := DeMixCode(s, key)
@@ -27,9 +28,9 @@ func TestMixRepeat2(t *testing.T) {
 	key := "20180919"
 	m := make(map[string]bool)
 
-	for i := 1000000000; i < 1099999999; i++ {
+	for i := 1000000000; i < 1000000999; i++ {
 		//fmt.Println("before", before)
-		before := ToStr(i)
+		before := internal.ToStr(i)
 		s := MixCode(before, key)
 		if i < 1000000010 {
 			fmt.Println(s)
@@ -39,27 +40,6 @@ func TestMixRepeat2(t *testing.T) {
 			t.Fatal("重复了", s)
 		}
 		m[s] = true
-
-	}
-}
-
-func TestMixRepeat(t *testing.T) {
-	ring := NewRing(10000, 99999, time.Second)
-	m := make(map[string]bool)
-
-	for i := 1000000000; i < 1000999999; i++ {
-		//fmt.Println("before", before)
-		before := ToStr(i)
-		rn := ToStr(ring.Next())
-		s := MixCode(before, ToStr(ring.Next()))
-		if i < 1000000010 {
-			fmt.Println(s + rn)
-		}
-
-		if m[s+rn] {
-			t.Fatal("重复了", s)
-		}
-		m[s+rn] = true
 
 	}
 }

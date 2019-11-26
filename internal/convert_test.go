@@ -1,4 +1,4 @@
-package gencode
+package internal
 
 import "testing"
 

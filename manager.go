@@ -3,6 +3,8 @@ package gencode
 import (
 	"errors"
 	"time"
+
+	"github.com/ilibs/gencode/internal"
 )
 
 type Manager struct {
@@ -26,10 +28,10 @@ func New(prefix string, key string, luhn bool) *Manager {
 // 生成码
 func (m *Manager) Get() string {
 	//得到15位编码
-	code := GenCode(ToStr(m.Ring.Next()))
+	code := GenCode(internal.ToStr(m.Ring.Next()))
 
 	if m.Luhn {
-		code = code + ToStr(LuhnGenerate(StrTo(code).MustInt64()))
+		code = code + internal.ToStr(LuhnGenerate(internal.StrTo(code).MustInt64()))
 	}
 	//前缀 + 混淆
 	return m.Prefix + MixCode(code, m.Key)
@@ -42,7 +44,7 @@ func (m *Manager) Verify(s string) (*time.Time, error) {
 	code = DeMixCode(code, m.Key)
 
 	//是否为纯数字
-	coden, err := StrTo(code).Int64()
+	coden, err := internal.StrTo(code).Int64()
 	if err != nil {
 		return nil, err
 	}
