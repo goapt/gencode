@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ilibs/gencode/internal"
+	"github.com/goapt/gencode/internal"
 )
 
 // 生成10位时间码

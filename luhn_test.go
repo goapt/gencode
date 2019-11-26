@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ilibs/gencode/internal"
+	"github.com/goapt/gencode/internal"
 )
 
 func TestLuhnValid(t *testing.T) {

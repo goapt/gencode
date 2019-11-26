@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/ilibs/gencode/internal"
+	"github.com/goapt/gencode/internal"
 )
 
 type Manager struct {

@@ -5,7 +5,7 @@ Generate unique code
 
 
 ```
-import "github.com/ilibs/gencode"
+import "github.com/goapt/gencode"
 
 func main(){
     manager := gencode.New("", "20180919",false)
