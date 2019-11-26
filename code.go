@@ -36,19 +36,13 @@ func ResolveTime(t int64) (*time.Time, error) {
 func GenCode(rn string) string {
 	// 10 位的时间信息
 	t := GenTime()
-	// 混淆
-	mt := MixCode(ToStr(t), rn)
 	// 必须保证rn在前面，因为混淆之后第一位数可能是0，会导致后续求校验码错误
-	return rn + mt
+	return rn + ToStr(t)
 }
 
 func ResolveCode(code string) (*time.Time, error) {
-	//得到前9位时间码转换为时间对象
-	rn := code[:5]
-	mt := code[5:15]
-
-	t := DeMixCode(mt, rn)
-
+	//得到前10位时间码转换为时间对象
+	t := code[5:15]
 	tn, err := StrTo(t).Int64()
 
 	if err != nil {

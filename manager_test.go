@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var manager = New("1", "20180919", false)
+var manager = New("1", "20180919", true)
 
 func TestResolveCode(t *testing.T) {
 

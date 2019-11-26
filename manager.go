@@ -37,10 +37,6 @@ func (m *Manager) Get() string {
 
 // 校验码
 func (m *Manager) Verify(s string) (*time.Time, error) {
-	if len(s) != 16 {
-		return nil, errors.New("code parse error: length must be 16")
-	}
-
 	//去除前缀，得到码
 	code := s[len(m.Prefix):]
 	code = DeMixCode(code, m.Key)
