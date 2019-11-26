@@ -5,10 +5,9 @@ import (
 	"testing"
 )
 
-var manager = New("1", "20180919", true)
+var manager = New("10", "20180919", false)
 
 func TestResolveCode(t *testing.T) {
-
 	code := manager.Get()
 	fmt.Println(code)
 	c, err := manager.Verify(code)
